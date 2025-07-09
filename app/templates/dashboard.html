@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<main class="app-main">
+  <!--begin::App Content Header-->
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6"><h3 class="mb-0">Overview</h3></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Overview</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <div class="container-fluid">
+      
+      <!-- New Stats Boxes -->
+      <div class="row">
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="small-box" style="background-color: #007bff; color: white;">
+            <div class="inner">
+              <h3>{{ total_properties }}</h3>
+              <p>Total Properties</p>
+            </div>
+            <div class="small-box-icon">
+              <i class="bi bi-globe" style="font-size: 4rem;"></i>
+            </div>
+            <a href="{{ url_for('main.properties') }}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+              View properties <i class="bi bi-arrow-right-circle"></i>
+            </a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="small-box" style="background-color: #6610f2; color: white;">
+            <div class="inner">
+              <h3>{{ total_events }}</h3>
+              <p>Total Events</p>
+            </div>
+            <div class="small-box-icon">
+              <i class="bi bi-lightning-charge" style="font-size: 4rem;"></i>
+            </div>
+            <a href="{{ url_for('main.events') }}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+              View events <i class="bi bi-arrow-right-circle"></i>
+            </a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="small-box" style="background-color: #20c997; color: white;">
+            <div class="inner">
+              <h3>{{ total_test_runs }}</h3>
+              <p>Total Test Runs</p>
+            </div>
+            <div class="small-box-icon">
+              <i class="bi bi-play-circle" style="font-size: 4rem;"></i>
+            </div>
+            <a href="{{ url_for('main.test_runs') }}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+              View test runs <i class="bi bi-arrow-right-circle"></i>
+            </a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="small-box" style="background-color: #e83e8c; color: white;">
+            <div class="inner">
+              <h3>{{ total_failed_events }}</h3>
+              <p>Failed Events</p>
+            </div>
+            <div class="small-box-icon">
+              <i class="bi bi-x-octagon" style="font-size: 4rem;"></i>
+            </div>
+            <a href="{{ url_for('main.test_runs') }}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+              View failures <i class="bi bi-arrow-right-circle"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-6 col-md-6">
+          {% if current_user.role == 'super_admin' %}
+          <div class="card card-danger">
+            <div class="card-header"><strong>Danger Zone</strong></div>
+            <div class="card-body">
+              <p>This will delete all data except users. Proceed with caution.</p>
+              <form method="POST" action="{{ url_for('main.reset_all_data') }}" onsubmit="return confirm('Are you sure you want to delete ALL data (except users)?')">
+                <button type="submit" class="btn btn-danger">Reset All Data</button>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+{% endblock %}

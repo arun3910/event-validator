@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Add New User{% endblock %}
+{% block content %}
+
+<main class="app-main">
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6"><h3 class="mb-0">Add User</h3></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.users') }}">Users</a></li>
+            <li class="breadcrumb-item active">Add User</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <section class="content">
+      <div class="container-fluid">
+        <div class="col-md-12">
+          <div class="card card-primary">
+            <div class="card-header"><div class="card-title">Add New User</div></div>
+            <div class="card-body">
+              <form method="POST" action="{{ url_for('main.add_user') }}">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="Login Username" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label>Role</label>
+                    <select name="role" class="form-select" required>
+                      <option value="">-- Select Role --</option>
+                      <option value="employee">Employee</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Add User</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Test Results{% endblock %}
+
+{% block content %}
+<main class="app-main">
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6"><h3 class="mb-0">Test Results</h3></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.test_runs') }}">Test Runs</a></li>
+            <li class="breadcrumb-item active">Results</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <section class="content">
+      <div class="container-fluid">
+
+        <div class="card card-outline card-primary">
+          <div class="card-header"><h3 class="card-title">Test Summary</h3></div>
+          <div class="card-body">
+            <p><strong>Property:</strong> {{ run.property.name }}</p>
+            <p><strong>Run Date:</strong> {{ run.started_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+          </div>
+        </div>
+        <br>
+
+        {% for log in logs %}
+        {% set collapse_id = 'collapse_' ~ loop.index %}
+        <div class="card {% if log.status == 'PASS' %}card-success{% else %}card-danger{% endif %}">
+          <div class="card-header d-flex justify-content-between align-items-center"
+               role="button"
+               data-bs-toggle="collapse"
+               data-bs-target="#{{ collapse_id }}"
+               aria-expanded="false"
+               aria-controls="{{ collapse_id }}">
+            <div>
+              <h3 class="card-title mb-0">
+                Event: {{ log.event.name }} ({{ log.event.event_type }}) — {{ log.status }}
+                {% if log.status == 'FAIL' %}
+                  {% if not log.payload %}
+                    — <span class="text-warning">No matching payload found</span>
+                  {% elif log.error_list %}
+                    — <span class="text-danger">{{ log.error_list[0][:100] }}{% if log.error_list|length > 1 %} (+{{ log.error_list|length - 1 }} more){% endif %}</span>
+                  {% endif %}
+                {% endif %}
+              </h3>
+            </div>
+            <i class="bi bi-chevron-down rotate-icon ms-auto"></i>
+          </div>
+
+          <div class="collapse" id="{{ collapse_id }}">
+            <div class="card-body">
+              <p><strong>Expected:</strong> Name = <code>{{ log.event.expected_event_name }}</code>, Type = <code>{{ log.event.event_type }}</code></p>
+
+              {% if log.payload_json %}
+                <p><strong>Captured Payload:</strong></p>
+                <pre style="background:#f8f9fa; padding:10px; border:1px solid #ccc;">{{ log.payload_json | tojson(indent=2) }}</pre>
+              {% else %}
+                <p><strong>No matching payload was captured.</strong></p>
+              {% endif %}
+
+              {% if log.error_list %}
+                <p><strong>Validation Errors:</strong></p>
+                <ul>
+                  {% for error in log.error_list %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const headers = document.querySelectorAll(".card-header[data-bs-toggle='collapse']");
+
+    headers.forEach(header => {
+      const collapseId = header.getAttribute("data-bs-target");
+      const collapseEl = document.querySelector(collapseId);
+      const icon = header.querySelector(".rotate-icon");
+      const bsCollapse = new bootstrap.Collapse(collapseEl, { toggle: false });
+
+      collapseEl.addEventListener('show.bs.collapse', () => {
+        icon.classList.add("rotate");
+      });
+
+      collapseEl.addEventListener('hide.bs.collapse', () => {
+        icon.classList.remove("rotate");
+      });
+
+      header.addEventListener("click", () => {
+        bsCollapse.toggle();
+      });
+    });
+  });
+</script>
+
+<style>
+  .rotate-icon {
+    transition: transform 0.3s ease;
+    font-size: 1.25rem;
+  }
+  .rotate-icon.rotate {
+    transform: rotate(180deg);
+  }
+</style>
+{% endblock %}

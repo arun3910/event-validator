@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Run Event Validation{% endblock %}
+
+{% block content %}
+<main class="app-main">
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6"><h3>Run Event Validation</h3></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.test_runs') }}">Test Runs</a></li>
+            <li class="breadcrumb-item active">Run Test</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Left side: Test runner -->
+          <div class="col-md-6">
+            <form method="POST" id="runTestForm">
+              <div class="mb-3">
+                <label class="form-label">Select Property</label>
+                <select name="property_id" class="form-select" required>
+                  <option value="">-- Choose Property --</option>
+                  {% for prop in properties %}
+                    <option value="{{ prop.id }}">{{ prop.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button class="btn btn-success" id="startBtn">Run Validation</button>
+            </form>
+          </div>
+
+          <!-- Right side: Real-Time Log Viewer -->
+          <div class="col-md-6">
+            <div class="card border-info">
+              <div class="card-header bg-info text-white">Network Log Viewer</div>
+              <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                <div id="logContainer" class="small font-monospace text-break"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const logContainer = document.getElementById("logContainer");
+  let eventSource;
+
+  document.getElementById("runTestForm").addEventListener("submit", function (e) {
+    // Allow form to submit normally
+    setTimeout(() => {
+      const selectedPropertyId = document.querySelector('[name="property_id"]').value;
+      if (eventSource) eventSource.close();
+
+      eventSource = new EventSource(`/stream-logs?property_id=${selectedPropertyId}`);
+      eventSource.onmessage = function (event) {
+        const log = JSON.parse(event.data);
+        const html = `
+          <div class="mb-3 border-bottom pb-2">
+            <strong>URL:</strong> ${log.url}<br>
+            <strong>Method:</strong> ${log.method}<br>
+            <strong>Status:</strong> ${log.status}<br>
+            <strong>Headers:</strong> <pre>${JSON.stringify(log.headers, null, 2)}</pre>
+            <strong>Payload:</strong> <pre>${JSON.stringify(log.payload, null, 2)}</pre>
+          </div>`;
+        logContainer.innerHTML = html + logContainer.innerHTML;
+      };
+    }, 1000);
+  });
+</script>
+{% endblock %}

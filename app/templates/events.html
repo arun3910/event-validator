@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Manage Events{% endblock %}
+{% block content %}
+
+<main class="app-main">
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6"><h3 class="mb-0">Events</h3></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item active">Events</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <section class="content">
+      <div class="container-fluid">
+        <a href="{{ url_for('main.add_event') }}" class="btn btn-primary mb-3">Add New Event</a>
+
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Event Name</th>
+              <th>Expected Name</th>
+              <th>URL to Visit</th>
+              <th>URL Match Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for event in events %}
+            <tr>
+              <td>{{ event.property.name }}</td>
+              <td>{{ event.name }}</td>
+              <td>{{ event.expected_event_name }}</td>
+              <td>{{ event.url }}</td>
+              <td>{{ event.url_match_type }}</td>
+              <td>
+                <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                <form method="POST" action="{{ url_for('main.delete_event', event_id=event.id) }}" style="display:inline;" onsubmit="return confirm('Delete this event?');">
+                  <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+{% endblock %}

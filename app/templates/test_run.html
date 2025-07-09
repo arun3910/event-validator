@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}All Test Runs{% endblock %}
+{% block content %}
+<main class="app-main">
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6"><h3>Test Runs</h3></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item active">Test Runs</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="app-content">
+    <section class="content">
+      <div class="container-fluid">
+        <a href="{{ url_for('main.run_test') }}" class="btn btn-primary mb-3">Run New Test</a>
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Date & Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for run in runs %}
+              <tr>
+                <td>{{ run.property.name }}</td>
+                <td>{{ run.started_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                  <a href="{{ url_for('main.test_results', run_id=run.id) }}" class="btn btn-sm btn-info">View Results</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Add Property{% endblock %}
+{% block content %}
+
+<main class="app-main">
+  <div class="app-content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6"><h3 class="mb-0">Add Property</h3></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.properties') }}">Properties</a></li>
+            <li class="breadcrumb-item active">Add Property</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <section class="content">
+      <div class="container-fluid">
+        <div class="col-md-12">
+          <div class="card card-primary">
+            <div class="card-header"><div class="card-title">Add New Property</div></div>
+            <div class="card-body">
+              <form method="POST">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Indian Express" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label>Base URL</label>
+                    <input type="url" name="base_url" class="form-control" placeholder="e.g. https://indianexpress.com" required>
+                  </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Add Property</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+{% endblock %}

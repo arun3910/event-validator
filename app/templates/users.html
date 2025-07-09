@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<main class="app-main">
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+      <!--begin::Container-->
+      <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0">User List</h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Manage Users</li>
+            </ol>
+          </div>
+        </div>
+        <!--end::Row-->
+      </div>
+      <!--end::Container-->
+    </div>
+    <section class="content">
+    <div class="container-fluid">
+      {% if session.role == 'super_admin' %}
+        <a href="{{ url_for('main.add_user') }}" class="btn btn-primary mb-3">+ Add User</a>
+      {% endif %}
+
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              {% if session.role == 'super_admin' and user.role != 'super_admin' %}
+                {% if user.role == 'employee' %}
+                  <a href="{{ url_for('main.promote_user', user_id=user.id) }}" class="btn btn-success btn-sm">Promote to Admin</a>
+                {% elif user.role == 'admin' %}
+                  <a href="{{ url_for('main.demote_user', user_id=user.id) }}" class="btn btn-warning btn-sm">Demote to Employee</a>
+                {% endif %}
+                <a href="{{ url_for('main.delete_user', user_id=user.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this user?')">Delete</a>
+              {% else %}
+                <span class="text-muted">No Actions</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+{% endblock %}
